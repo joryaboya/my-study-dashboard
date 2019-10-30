@@ -1,9 +1,9 @@
 //DB Connection
-const {MONGOURI} = require('./keys')
+require('dotenv').config()
 const mongoose = require('mongoose')
 const connectDB = async () => {
     try {
-      await mongoose.connect(MONGOURI, {useUnifiedTopology: true, useNewUrlParser: true}, (err, success) => {
+      await mongoose.connect(process.env.MONGOURI, {useUnifiedTopology: true, useNewUrlParser: true}, (err, success) => {
         if (err) { console.error(err)}
         else {
           console.log('Connection Status: Success');

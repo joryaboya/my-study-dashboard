@@ -19,6 +19,9 @@
         <iframe class="border border-dark p-1 text-center col"src="<%=`https://www.youtube.com/embed/${user.profile.activeLink}`%>" width="640" height="360" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
         <form action="/video-select" method="POST" name="videoSelect">
             <div class="form-group col p-3 text-center" style="width: 50%;">
+                <% if(user.profile.backgroundVideoLinks.length==0){%>
+                    <p>Add a video via the Edit Video link</p>
+                <%}%>
                 <label for="videoSelect">Select Which Video You Want to Display</label><br>
                 <select name="videoSelect" id="videoSelect">
                         <option value="" disabled selected>Pick a Video</option>

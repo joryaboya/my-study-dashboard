@@ -8,6 +8,7 @@ const morgan = require('morgan')
 const {connectDB} = require('./config/db')
 const cors = require('cors');
 require('./config/passport')(passport)
+const MongoStore = require('connect-mongo')(session);
 
 
 //middleware
@@ -25,6 +26,9 @@ app.use(session({
   resave: false,
   saveUninitialized: true,
 }))
+app.use(session({
+  store: new MongoStore({ url: process.env.MONGOURI })
+}));
 
 app.use(flash())
 app.use((req, res, next) => {

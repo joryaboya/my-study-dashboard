@@ -2,7 +2,7 @@
     <div class="col-md-6 m-auto">
         <div class="card card-body">
         <h1 class="text-center mb-3">
-            <i class="fas fa-user-plus"></i> Make A Profile
+            Make A Profile
         </h1>
         <% include ./partials/messages.ejs %>
         <form action="/users/profile" method="POST" enctype="multipart/form-data" name="file-upload">
@@ -13,7 +13,7 @@
                 id="displayName"
                 name="displayName"
                 class="form-control"
-                placeholder="Enter Disaply Name"
+                placeholder="Enter Display Name"
                 value="<%= typeof displayName != 'undefined' ? displayName : '' %>"
             />
             </div>

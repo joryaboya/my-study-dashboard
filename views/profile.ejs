@@ -1,0 +1,31 @@
+<div class="row mt-5 myregister">
+    <div class="col-md-6 m-auto">
+        <div class="card card-body">
+        <h1 class="text-center mb-3">
+            <i class="fas fa-user-plus"></i> Make A Profile
+        </h1>
+        <% include ./partials/messages.ejs %>
+        <form action="/users/profile" method="POST" enctype="multipart/form-data" name="file-upload">
+            <div class="form-group">
+            <label for="displayName">Display Name</label>
+            <input
+                type="displayName"
+                id="displayName"
+                name="displayName"
+                class="form-control"
+                placeholder="Enter Disaply Name"
+                value="<%= typeof displayName != 'undefined' ? displayName : '' %>"
+            />
+            </div>
+            <div class="form-group">
+                <label>Image</label>
+                <input type="file" name="image" id="image" class="form-control-file">
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">
+                Make Profile
+            </button>
+        </form>
+        <p class="lead mt-4">Have An Account? <a href="/users/login">Login</a></p>
+        </div>
+    </div>
+</div>

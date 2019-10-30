@@ -1,0 +1,14 @@
+[
+    {
+        "levelOfImportance": "It Can Wait",
+        "weight": 1
+    },
+    {
+        "levelOfImportance": "Should Get Onto It",
+        "weight": 2
+    },
+    {  
+        "levelOfImportance": "Cutting it Fine",
+        "weight": 3
+    }
+]

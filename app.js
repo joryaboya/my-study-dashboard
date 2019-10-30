@@ -9,7 +9,8 @@ const {connectDB} = require('./config/db')
 const cors = require('cors');
 require('./config/passport')(passport)
 const MongoStore = require('connect-mongo')(session);
-
+const mongodb = require('mongodb')
+const MongoClient = mongodb.MongoClient;
 
 //middleware
 
@@ -29,6 +30,19 @@ app.use(express.urlencoded({extended: false}))
 app.use(session({
   store: new MongoStore({ url: process.env.MONGOURI })
 }));
+const uri = process.env.MONGOURI
+MongoClient.connect(uri, function (err, db) {
+  if (err) {
+    console.log('Unable to connect to the mongoDB server. Error:', err);
+  } else {
+    console.log('Connection established to', uri);
+
+    // do some work here with the database.
+
+    //Close connection
+    db.close();
+  }
+});
 
 app.use(flash())
 app.use((req, res, next) => {

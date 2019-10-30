@@ -99,33 +99,50 @@ router.post('/profile', upload, async(req,res)=>{
   const { displayName } = req.body
   // console.log(req.file)
   const { image } = req.files
-  const uniqueValue = req.user.id 
-  const key = Buffer.from(`${uniqueValue}${image[0].originalname}`).toString('base64')
-  let fileParams = {
-    Bucket: process.env.BUCKET,
-    Body: image[0].buffer,
-    Key: key,
-    ACL: 'public-read',
-    ContentType: image[0].mimetype
-  }
-  s3credentials.upload(fileParams, async (err, data) => {
-    if (err) {
-      res.send(err)
-    } else {
-      const imageUrl = data.Location
-      const newProfile = new Profile({
-        displayName: displayName,
-        displayImgLink: imageUrl,
-        user: req.user.id
-      })
-      // console.log(newProfile)
-      // console.log(user)
-      await newProfile.save()
-      const updateUser = await User.findByIdAndUpdate({_id: req.user.id}, {profile: newProfile.id})
-      await updateUser.save()
-      res.redirect('/dashboard')
+  console.log(image)
+  
+  if(image !== undefined){
+    const uniqueValue = req.user.id 
+    const key = Buffer.from(`${uniqueValue}${image[0].originalname}`).toString('base64')
+    let fileParams = {
+      Bucket: process.env.BUCKET,
+      Body: image[0].buffer,
+      Key: key,
+      ACL: 'public-read',
+      ContentType: image[0].mimetype
     }
-  })
+    s3credentials.upload(fileParams, async (err, data) => {
+      if (err) {
+        res.send(err)
+      } else {
+        const imageUrl = data.Location
+        const newProfile = new Profile({
+          displayName: displayName,
+          displayImgLink: imageUrl,
+          user: req.user.id
+        })
+        // console.log(newProfile)
+        // console.log(user)
+        await newProfile.save()
+        const updateUser = await User.findByIdAndUpdate({_id: req.user.id}, {profile: newProfile.id})
+        await updateUser.save()
+        res.redirect('/dashboard')
+      }
+    })
+  }
+  else{
+    const newProfile = new Profile({
+      displayName: displayName,
+      user: req.user.id
+    })
+    // console.log(newProfile)
+    // console.log(user)
+    await newProfile.save()
+    const updateUser = await User.findByIdAndUpdate({_id: req.user.id}, {profile: newProfile.id})
+    await updateUser.save()
+    res.redirect('/dashboard')
+  }
+  
 })
 
 

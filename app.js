@@ -11,6 +11,8 @@ require('./config/passport')(passport)
 const MongoStore = require('connect-mongo')(session);
 const mongodb = require('mongodb')
 const MongoClient = mongodb.MongoClient;
+const mongoose = require('mongoose')
+require('dotenv').config()
 
 //middleware
 
@@ -22,9 +24,10 @@ app.use(morgan('dev'))
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
 
-
+//db initialised
+connectDB()
 app.use(session({
-  store: new MongoStore({ url: process.env.MONGOURI  }),
+  store: new MongoStore({ url: process.env.MONGOURI, mongooseConnection: mongoose.connection, collection: 'session'  }),
   secret: 'keyboard cat', 
   resave: false, 
   saveUninitialized: true
@@ -55,8 +58,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(cors())
 
-//db initialised
-connectDB()
+
 
 // Routes
 app.use('/', require('./routes/index'))

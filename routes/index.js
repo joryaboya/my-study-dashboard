@@ -12,10 +12,10 @@ router.get('/', (req,res) =>{
 
 router.get('/dashboard', ensureAuthenticated, async (req,res) =>{
     const populatedUser = await User.findOne({_id: req.user.id}).populate('profile')
-    console.log('ello')
+    
     const currentProfile = await Profile.findOne({user: req.user.id}).populate('tasks')
-    console.log(taskJSON)
-    // const data = await JSON.parse(taskJSON)
+    
+    
 
     res.render('dashboard', {user: populatedUser, taskData: taskJSON, profile: currentProfile})
 })

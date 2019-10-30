@@ -22,20 +22,19 @@ app.use(morgan('dev'))
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
 
-// app.use(session({
-//   secret: 'keyboard cat',
-//   resave: false,
-//   saveUninitialized: true,
-// }))
+
 app.use(session({
-  store: new MongoStore({ url: process.env.MONGOURI })
+  store: new MongoStore({ url: process.env.MONGOURI  }),
+  secret: 'keyboard cat', 
+  resave: false, 
+  saveUninitialized: true
 }));
 const uri = process.env.MONGOURI
-MongoClient.connect(uri, function (err, db) {
+MongoClient.connect(uri,{ useUnifiedTopology: true }, function (err, db) {
   if (err) {
     console.log('Unable to connect to the mongoDB server. Error:', err);
   } else {
-    console.log('Connection established to', uri);
+    console.log('Connection established to mongoclient');
 
     // do some work here with the database.
 

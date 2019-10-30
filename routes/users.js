@@ -110,8 +110,7 @@ router.post('/profile', upload, async(req,res)=>{
   }
   s3credentials.upload(fileParams, async (err, data) => {
     if (err) {
-      res.send('you got an error')
-      console.log(err)
+      res.send(err)
     } else {
       const imageUrl = data.Location
       const newProfile = new Profile({

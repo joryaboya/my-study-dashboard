@@ -31,13 +31,13 @@ router.get('/edit-profile', async(req,res)=>{
 })
 router.post('/edit-profile', upload, async(req,res, next)=>{
 
-    if(req.body.displayName){
+    if(req.body.displayName !== undefined){
         const myProfile = await Profile.findOne({user: req.user.id})
         myProfile.displayName = req.body.displayName;
         req.flash('success_edit', 'Profile Successfully Updated')
     }
 
-    if(req.files.image){
+    if(req.files.image !== undefined){
         const myProfile = await Profile.findOne({_id: req.user.profile.id})
         const { image } = req.files
         const uniqueValue = req.user.id 

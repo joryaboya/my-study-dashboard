@@ -92,6 +92,7 @@ let s3credentials = new AWS.S3({
 });
 
 router.get('/profile', async (req,res)=>{
+  passport.authenticate('local')
   res.render('profile')
 })
 
@@ -102,7 +103,7 @@ router.post('/profile', upload, async(req,res)=>{
   console.log(image)
   
   if(image !== undefined){
-    const uniqueValue = req.user.id 
+    const uniqueValue = req.user.id
     const key = Buffer.from(`${uniqueValue}${image[0].originalname}`).toString('base64')
     let fileParams = {
       Bucket: process.env.BUCKET,

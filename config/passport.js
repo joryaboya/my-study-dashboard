@@ -26,11 +26,12 @@ module.exports = async (passport) => {
     })
   )
   passport.serializeUser((user, done) => {
-    done(null, user.id);
+    done(null, user._id);
   });
   
   passport.deserializeUser((id, done) => {
-    User.findById(id, (err, user) => {
+    var userId = mongoose.Types.ObjectId(id);
+    User.findById(userId, (err, user) => {
       done(err, user);
     });
   });

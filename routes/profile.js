@@ -8,6 +8,8 @@ const { ensureAuthenticated } = require('../config/auth')
 const storage = multer.memoryStorage()
 const AWS = require('aws-sdk');
 require('dotenv').config()
+const mongoose = require('mongoose')
+mongoose.set('useFindAndModify', false);
 
 const fields = [
     {name: 'displayName'},
@@ -25,22 +27,50 @@ let s3credentials = new AWS.S3({
 
 router.get('/edit-profile', async(req,res)=>{
     const populatedUser = await User.findOne({_id: req.user.id}).populate('profile')
+    passport.authenticate('local')
     res.render('edit-profile', {
       user: populatedUser
     })
 })
 router.post('/edit-profile', upload, async(req,res, next)=>{
-
-    if(req.body.displayName !== undefined){
+    passport.authenticate('local')
+    console.log(req.user)
+    if(req.body.displayName){
         const myProfile = await Profile.findOne({user: req.user.id})
         myProfile.displayName = req.body.displayName;
-        req.flash('success_edit', 'Profile Successfully Updated')
+        await myProfile.save()
+        console.log('name update')
+        if(req.files.image !== undefined){
+            console.log(req.files.image)
+            const myProfile = await Profile.findOne({_id: req.user.profile.id}).populate()
+            const { image } = req.files
+            const uniqueValue = req.user.id
+            const key = Buffer.from(`${uniqueValue}${image[0].originalname}`).toString('base64')
+            let fileParams = {
+            Bucket: process.env.BUCKET,
+            Body: image[0].buffer,
+            Key: key,
+            ACL: 'public-read',
+            ContentType: image[0].mimetype
+            }
+            s3credentials.upload(fileParams, async (err, data) => {
+            if (err) {
+                res.send(err)
+            } else {
+                const imageUrl = data.Location
+                console.log('hello')
+                console.log(req.user.profile)
+                const updateProfile = await Profile.findByIdAndUpdate({_id: req.user.profile}, {displayImgLink: imageUrl})
+            }
+            })
+        }
+        res.redirect('/dashboard')
     }
-
     if(req.files.image !== undefined){
-        const myProfile = await Profile.findOne({_id: req.user.profile.id})
+        console.log(req.files.image)
+        const myProfile = await Profile.findOne({_id: req.user.profile.id}).populate()
         const { image } = req.files
-        const uniqueValue = req.user.id 
+        const uniqueValue = req.user.id
         const key = Buffer.from(`${uniqueValue}${image[0].originalname}`).toString('base64')
         let fileParams = {
         Bucket: process.env.BUCKET,
@@ -51,21 +81,16 @@ router.post('/edit-profile', upload, async(req,res, next)=>{
         }
         s3credentials.upload(fileParams, async (err, data) => {
         if (err) {
-            res.send('you got an error')
+            res.send(err)
         } else {
             const imageUrl = data.Location
-            myProfile.displayImgLink = imageUrl
-            await myProfile.save()
-            
+            console.log('hello')
+            console.log(req.user.profile)
+            const updateProfile = await Profile.findByIdAndUpdate({_id: req.user.profile}, {displayImgLink: imageUrl})
+            res.redirect('/dashboard')
         }
-        })
+        })  
     }
-    req.flash('success_edit', 'Profile Successfully Updated')
-        passport.authenticate('local', {
-            successRedirect: '/dashboard',
-            failureRedirect: '/login',
-            failureFlash: true
-        })
 })
 
 router.get('/logout', (req,res)=>{

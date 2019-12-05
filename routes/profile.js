@@ -24,7 +24,6 @@ let s3credentials = new AWS.S3({
     region: 'ap-southeast-2'
 });
   
-
 router.get('/edit-profile', async(req,res)=>{
     const populatedUser = await User.findOne({_id: req.user.id}).populate('profile')
     passport.authenticate('local')
@@ -32,14 +31,15 @@ router.get('/edit-profile', async(req,res)=>{
       user: populatedUser
     })
 })
+
 router.post('/edit-profile', upload, async(req,res, next)=>{
     passport.authenticate('local')
-    console.log(req.user)
+    console.log('eeeeeee')
+    console.log(req.body.displayName)
     if(req.body.displayName){
         const myProfile = await Profile.findOne({user: req.user.id})
         myProfile.displayName = req.body.displayName;
         await myProfile.save()
-        console.log('name update')
         if(req.files.image !== undefined){
             console.log(req.files.image)
             const myProfile = await Profile.findOne({_id: req.user.profile.id}).populate()
@@ -53,6 +53,7 @@ router.post('/edit-profile', upload, async(req,res, next)=>{
             ACL: 'public-read',
             ContentType: image[0].mimetype
             }
+            console.log('once')
             s3credentials.upload(fileParams, async (err, data) => {
             if (err) {
                 res.send(err)
@@ -66,26 +67,24 @@ router.post('/edit-profile', upload, async(req,res, next)=>{
         }
         res.redirect('/dashboard')
     }
-    if(req.files.image !== undefined){
-        console.log(req.files.image)
+    if(req.files.image!==undefined && !req.body.displayName){
         const myProfile = await Profile.findOne({_id: req.user.profile.id}).populate()
+        console.log('twice')
         const { image } = req.files
         const uniqueValue = req.user.id
         const key = Buffer.from(`${uniqueValue}${image[0].originalname}`).toString('base64')
         let fileParams = {
-        Bucket: process.env.BUCKET,
-        Body: image[0].buffer,
-        Key: key,
-        ACL: 'public-read',
-        ContentType: image[0].mimetype
+            Bucket: process.env.BUCKET,
+            Body: image[0].buffer,
+            Key: key,
+            ACL: 'public-read',
+            ContentType: image[0].mimetype
         }
         s3credentials.upload(fileParams, async (err, data) => {
         if (err) {
             res.send(err)
         } else {
             const imageUrl = data.Location
-            console.log('hello')
-            console.log(req.user.profile)
             const updateProfile = await Profile.findByIdAndUpdate({_id: req.user.profile}, {displayImgLink: imageUrl})
             res.redirect('/dashboard')
         }

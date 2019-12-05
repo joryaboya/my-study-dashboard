@@ -98,9 +98,7 @@ router.get('/profile', async (req,res)=>{
 
 router.post('/profile', upload, async(req,res)=>{
   const { displayName } = req.body
-  // console.log(req.file)
   const { image } = req.files
-  console.log(image)
   
   if(image !== undefined){
     const uniqueValue = req.user.id
@@ -122,8 +120,6 @@ router.post('/profile', upload, async(req,res)=>{
           displayImgLink: imageUrl,
           user: req.user.id
         })
-        // console.log(newProfile)
-        // console.log(user)
         await newProfile.save()
         const updateUser = await User.findByIdAndUpdate({_id: req.user.id}, {profile: newProfile.id})
         await updateUser.save()
@@ -136,8 +132,6 @@ router.post('/profile', upload, async(req,res)=>{
       displayName: displayName,
       user: req.user.id
     })
-    // console.log(newProfile)
-    // console.log(user)
     await newProfile.save()
     const updateUser = await User.findByIdAndUpdate({_id: req.user.id}, {profile: newProfile.id})
     await updateUser.save()

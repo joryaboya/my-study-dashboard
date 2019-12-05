@@ -1,37 +1,37 @@
 <div class="row mt-5 myregister">
     <div class="col-md-6 m-auto">
         <div class="card card-body">
-        <h1 class="text-center mb-3">
-            Add a Display Video
-        </h1>
-        <% include ./partials/messages.ejs %>
-        <form action="/profile/edit-video" method="POST" name="video-update">
-            <div class="form-group">
-                <label for="videoLink">Add a new video link</label>
-                <input
-                    type="videoLink"
-                    id="videoLink"
-                    name="videoLink"
-                    class="form-control"
-                    placeholder="Enter the YouTube Video URL"
-                    value="<%= typeof videoLink != 'undefined' ? videoLink : '' %>"
-                />
-            </div>
-            <div class="form-group">
-                <label for="videoTitle">Add the title for the above video</label>
-                <input
-                    type="videoTitle"
-                    id="videoTitle"
-                    name="videoTitle"
-                    class="form-control"
-                    placeholder="Enter the Title"
-                    value="<%= typeof videoTitle != 'undefined' ? videoTitle : '' %>"
-                />
-            </div>
-            <button type="submit" class="btn btn-primary btn-block">
-                Add to Video List
-            </button>
-        </form>
+            <h1 class="text-center mb-3">
+                Add a Display Video
+            </h1>
+            <% include ./partials/messages.ejs %>
+            <form action="/profile/edit-video" method="POST" name="video-update">
+                <div class="form-group">
+                    <label for="videoLink">Add a new video link</label>
+                    <input
+                        type="videoLink"
+                        id="videoLink"
+                        name="videoLink"
+                        class="form-control"
+                        placeholder="Enter the YouTube Video URL"
+                        value="<%= typeof videoLink != 'undefined' ? videoLink : '' %>"
+                    />
+                </div>
+                <div class="form-group">
+                    <label for="videoTitle">Add the title for the above video</label>
+                    <input
+                        type="videoTitle"
+                        id="videoTitle"
+                        name="videoTitle"
+                        class="form-control"
+                        placeholder="Enter the Title"
+                        value="<%= typeof videoTitle != 'undefined' ? videoTitle : '' %>"
+                    />
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">
+                    Add to Video List
+                </button>
+            </form>
         </div>
         <a href="/dashboard">Back</a>
     </div>

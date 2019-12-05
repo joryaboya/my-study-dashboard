@@ -32,6 +32,7 @@ app.use(session({
   resave: false, 
   saveUninitialized: true
 }));
+
 const uri = process.env.MONGOURI
 MongoClient.connect(uri,{ useUnifiedTopology: true }, function (err, db) {
   if (err) {

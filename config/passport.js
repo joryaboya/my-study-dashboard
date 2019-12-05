@@ -7,7 +7,7 @@ const User = require('../models/User');
 
 module.exports = async (passport) => {
   passport.use(
-    new LocalStrategy({usernameField: 'email'}, async (email, password, done) => {
+    new LocalStrategy({emailField: 'email'}, async (email, password, done) => {
       try {
         const user = await User.findOne({email: email})
         if (!user) { return done(null, false, {message: "Email Not Registered"}) }

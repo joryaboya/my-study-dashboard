@@ -42,7 +42,8 @@ router.post('/edit-profile', upload, async(req,res, next)=>{
         await myProfile.save()
         if(req.files.image !== undefined){
             console.log(req.files.image)
-            const myProfile = await Profile.findOne({_id: req.user.profile.id}).populate()
+            // console.log(req.user.)
+            const myProfile = await Profile.findOne({_id: req.user.profile}).populate()
             const { image } = req.files
             const uniqueValue = req.user.id
             const key = Buffer.from(`${uniqueValue}${image[0].originalname}`).toString('base64')
@@ -68,7 +69,7 @@ router.post('/edit-profile', upload, async(req,res, next)=>{
         res.redirect('/dashboard')
     }
     if(req.files.image!==undefined && !req.body.displayName){
-        const myProfile = await Profile.findOne({_id: req.user.profile.id}).populate()
+        const myProfile = await Profile.findOne({_id: req.user.profile}).populate()
         console.log('twice')
         const { image } = req.files
         const uniqueValue = req.user.id
